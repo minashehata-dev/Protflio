@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, TrendingUp } from 'lucide-react';
+import { ExternalLink, TrendingUp } from 'lucide-react';
 import { featuredProjects } from '../../data/portfolioData';
 import { Project } from '../../types/portfolio';
 import { RunwayImage } from '../common/RunwayImage';
@@ -18,26 +18,26 @@ export const Projects: React.FC = () => {
     : featuredProjects.filter(p => p.category === activeFilter);
 
   return (
-    <section id="projects" className="py-20 sm:py-28 lg:py-36 w-full">
+    <section id="projects" className="py-12 sm:py-16 lg:py-20 w-full">
       {/* 1. Header & Rive Layout Controls (Fill width with responsive clamping) */}
-      <div className="w-full max-w-[1920px] 3xl:max-w-[2200px] mx-auto px-6 sm:px-10 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-18 lg:mb-20">
+      <div className="w-full max-w-[1920px] 3xl:max-w-[2200px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 lg:mb-16">
           <div>
-            <p className="text-xs sm:text-sm md:text-base font-mono uppercase tracking-widest text-sky-400 mb-3 sm:mb-4">
+            <p className="text-xs sm:text-sm font-mono uppercase tracking-widest text-sky-400 mb-2 sm:mb-3">
               Selected Case Studies
             </p>
-            <h2 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
               Commercial Systems & Deployments.
             </h2>
           </div>
 
           {/* Category Filter Pills (Rive Hug Sizing Mode) */}
-          <div className="flex flex-wrap gap-2.5 mt-6 md:mt-0 p-2 rounded-2xl subtle-badge bg-black/40 shrink-0">
+          <div className="flex flex-wrap gap-2 mt-5 md:mt-0 p-1.5 rounded-xl subtle-badge bg-black/40 shrink-0">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm lg:text-base font-medium transition-all ${
+                className={`px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   activeFilter === cat
                     ? 'bg-white text-slate-900 font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-white'
@@ -50,7 +50,7 @@ export const Projects: React.FC = () => {
         </div>
 
         {/* 2. Rive Layout Grid (Fill tracks on Tablet & Desktop) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 xl:gap-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
           <AnimatePresence mode="popLayout">
             {filtered.map((project: Project) => (
               <ProjectCard key={project.id} project={project} />
@@ -60,7 +60,7 @@ export const Projects: React.FC = () => {
       </div>
 
       {/* 3. Runway Live Media Showcase Reel */}
-      <div className="mt-16 sm:mt-24">
+      <div className="mt-12 sm:mt-16">
         <RunwayReel />
       </div>
     </section>
@@ -159,24 +159,24 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
       )}
 
       {/* Content (Rive Fill Mode with Adaptive Constraints) */}
-      <div className="p-6 sm:p-8 lg:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+      <div className="p-5 sm:p-7 lg:p-8 flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white group-hover:text-sky-300 transition-colors mb-1.5">
             {project.title}
           </h3>
-          <p className="text-sm sm:text-base lg:text-lg font-mono text-slate-400 mb-4">{project.tagline}</p>
-          <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-light leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm font-mono text-slate-400 mb-3">{project.tagline}</p>
+          <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed mb-5">
             {project.description}
           </p>
         </div>
 
         <div>
           {/* Tech tags (Rive Hug Items) */}
-          <div className="flex flex-wrap gap-2 sm:gap-2.5 mb-6">
+          <div className="flex flex-wrap gap-2 mb-5">
             {project.tags.map((tag, idx) => (
               <span
                 key={idx}
-                className="px-3 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-mono text-slate-300 bg-white/[0.05] border border-white/5"
+                className="px-2.5 sm:px-3 py-1 rounded-md text-xs font-mono text-slate-300 bg-white/[0.05] border border-white/5"
               >
                 {tag}
               </span>
@@ -184,27 +184,16 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
           </div>
 
           {/* Links (Rive Row Alignment) */}
-          <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-5 border-t border-white/5 text-sm sm:text-base lg:text-lg font-medium">
+          <div className="flex flex-wrap items-center gap-5 sm:gap-6 pt-4 border-t border-white/5 text-xs sm:text-sm lg:text-base font-medium">
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white hover:text-sky-400 transition"
+                className="inline-flex items-center gap-1.5 text-white hover:text-sky-400 transition"
               >
                 <span>Live Implementation</span>
-                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
-              </a>
-            )}
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition"
-              >
-                <Github className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Source Repository</span>
+                <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </a>
             )}
           </div>

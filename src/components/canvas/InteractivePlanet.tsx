@@ -1,5 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 
+/**
+ * 3D Holographic Web Development Symbol (< / >)
+ * Assembles and morphs dynamically in 3D space as you scroll.
+ * Features:
+ * - 3D Angle Brackets `<` and `>` with Center Slash `/`
+ * - Silicon Chip Frame & Hardware Pins representing Web & Embedded IoT
+ * - Scroll-Driven Magnetic Assembly from Floating Data Dust into 3D Web Symbol
+ * - Calm, elegant, non-intrusive aesthetic with smooth 60fps Canvas 2D
+ * - 100% fluid & responsive across Mobile, Tablet, Laptop & 4K screens
+ */
 export const InteractivePlanet: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -15,15 +25,20 @@ export const InteractivePlanet: React.FC = () => {
     let height = 0;
     let isVisible = true;
 
-    // Responsive Canvas Sizing with clamped DPR for crisp 60fps performance
+    // -------------------------------------------------------------
+    // CANVAS RESIZING & DPR SCALING
+    // -------------------------------------------------------------
     const handleResize = () => {
       if (!canvas) return;
-      width = window.innerWidth;
-      height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width || window.innerWidth;
+      height = rect.height || window.innerHeight;
 
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      const rawDpr = window.devicePixelRatio || 1;
+      const dpr = width < 768 ? 1 : Math.min(rawDpr, 1.5);
+
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
@@ -32,9 +47,13 @@ export const InteractivePlanet: React.FC = () => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    resizeObserver.observe(canvas);
+    window.addEventListener('resize', handleResize, { passive: true });
 
-    // Mouse & Touch Tracking with Smooth Spring/Lerp Physics
+    // -------------------------------------------------------------
+    // INTERACTION & SCROLL STATE
+    // -------------------------------------------------------------
     const mouse = {
       targetX: 0,
       targetY: 0,
@@ -42,176 +61,407 @@ export const InteractivePlanet: React.FC = () => {
       currentY: 0,
     };
 
+    let scrollY = window.scrollY || 0;
+    let targetAssembleProgress = Math.min(scrollY / 420, 1.0);
+    let currentAssembleProgress = targetAssembleProgress;
+    let scrollRotation = 0;
+
     const handleMouseMove = (e: MouseEvent) => {
-      // Normalized coordinates [-1, 1] relative to center
-      mouse.targetX = (e.clientX / width - 0.5) * 2;
-      mouse.targetY = (e.clientY / height - 0.5) * 2;
+      mouse.targetX = (e.clientX / (width || 1) - 0.5) * 2;
+      mouse.targetY = (e.clientY / (height || 1) - 0.5) * 2;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touch = e.touches[0];
-        mouse.targetX = (touch.clientX / width - 0.5) * 1.5;
-        mouse.targetY = (touch.clientY / height - 0.5) * 1.5;
+        mouse.targetX = (touch.clientX / (width || 1) - 0.5) * 1.5;
+        mouse.targetY = (touch.clientY / (height || 1) - 0.5) * 1.5;
       }
     };
 
     const handleTouchEnd = () => {
-      // Return smoothly to level horizon on mobile when touch finishes
       mouse.targetX = 0;
       mouse.targetY = 0;
+    };
+
+    const handleScroll = () => {
+      scrollY = window.scrollY || 0;
+      // Assembles progressively from 0 to 420px of scroll
+      targetAssembleProgress = Math.min(Math.max(scrollY / 420, 0), 1.0);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Pause animation when tab is inactive to guarantee zero CPU/battery drain
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
-      if (isVisible) {
-        animationFrameId = requestAnimationFrame(render);
-      }
+      if (isVisible) animationFrameId = requestAnimationFrame(render);
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // -------------------------------------------------------------
-    // PRE-ALLOCATED TYPED ARRAYS (Zero Garbage Collection = Zero Lag)
-    // Mathematical Fibonacci Spiral Distribution for Uniform Density
+    // 3D GEOMETRY SYNTHESIS: WEB DEVELOPMENT SYMBOL (< / >)
     // -------------------------------------------------------------
-    const TOTAL_PARTICLES = 950;
-    const baseX = new Float32Array(TOTAL_PARTICLES);
-    const baseY = new Float32Array(TOTAL_PARTICLES);
-    const baseZ = new Float32Array(TOTAL_PARTICLES);
-    const thetas = new Float32Array(TOTAL_PARTICLES);
-    const phis = new Float32Array(TOTAL_PARTICLES);
+    const TOTAL_POINTS = 660;
 
-    const goldenRatio = (1 + Math.sqrt(5)) / 2;
-    const angleIncrement = Math.PI * 2 * goldenRatio;
+    const origX = new Float32Array(TOTAL_POINTS);
+    const origY = new Float32Array(TOTAL_POINTS);
+    const origZ = new Float32Array(TOTAL_POINTS);
 
-    for (let i = 0; i < TOTAL_PARTICLES; i++) {
-      const t = i / TOTAL_PARTICLES;
-      const inclination = Math.acos(1 - 2 * t); // phi: 0 to PI
-      const azimuth = angleIncrement * i; // theta: 0 to 2*PI
+    const targetX = new Float32Array(TOTAL_POINTS);
+    const targetY = new Float32Array(TOTAL_POINTS);
+    const targetZ = new Float32Array(TOTAL_POINTS);
 
-      thetas[i] = azimuth;
-      phis[i] = inclination;
+    const pointTypes = new Uint8Array(TOTAL_POINTS); // 0: brackets < >, 1: slash /, 2: frame, 3: pins, 4: orbit
+    let idx = 0;
 
-      baseX[i] = Math.sin(inclination) * Math.cos(azimuth);
-      baseY[i] = Math.sin(inclination) * Math.sin(azimuth);
-      baseZ[i] = Math.cos(inclination);
+    // Dispersed spherical cloud origin
+    const setOrigin = (i: number, spread = 2.4) => {
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = Math.cbrt(Math.random()) * spread + 0.8;
+      const sinPhi = Math.sin(phi);
+      origX[i] = r * sinPhi * Math.cos(theta);
+      origY[i] = r * sinPhi * Math.sin(theta);
+      origZ[i] = r * Math.cos(phi);
+    };
+
+    // 1. LEFT BRACKET `<` (60 points with 3D Z-thickness)
+    const countBracket = 30;
+    for (let layer = -1; layer <= 1; layer += 2) {
+      const zOffset = layer * 0.16;
+      for (let i = 0; i < countBracket / 2; i++) {
+        const t = i / (countBracket / 2 - 1);
+        targetX[idx] = -0.45 + t * (-0.95 - -0.45);
+        targetY[idx] = 0.45 + t * (0.0 - 0.45);
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 0;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let i = 0; i < countBracket / 2; i++) {
+        const t = i / (countBracket / 2 - 1);
+        targetX[idx] = -0.95 + t * (-0.45 - -0.95);
+        targetY[idx] = 0.0 + t * (-0.45 - 0.0);
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 0;
+        setOrigin(idx);
+        idx++;
+      }
     }
 
-    let time = 0;
-    let autoRotation = 0;
+    // 2. CENTER SLASH `/` (44 points with 3D Z-thickness)
+    const countSlash = 22;
+    for (let layer = -1; layer <= 1; layer += 2) {
+      const zOffset = layer * 0.16;
+      for (let i = 0; i < countSlash; i++) {
+        const t = i / (countSlash - 1);
+        targetX[idx] = -0.22 + t * (0.22 - -0.22);
+        targetY[idx] = -0.55 + t * (0.55 - -0.55);
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 1;
+        setOrigin(idx);
+        idx++;
+      }
+    }
+
+    // 3. RIGHT BRACKET `>` (60 points with 3D Z-thickness)
+    for (let layer = -1; layer <= 1; layer += 2) {
+      const zOffset = layer * 0.16;
+      for (let i = 0; i < countBracket / 2; i++) {
+        const t = i / (countBracket / 2 - 1);
+        targetX[idx] = 0.45 + t * (0.95 - 0.45);
+        targetY[idx] = 0.45 + t * (0.0 - 0.45);
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 0;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let i = 0; i < countBracket / 2; i++) {
+        const t = i / (countBracket / 2 - 1);
+        targetX[idx] = 0.95 + t * (0.45 - 0.95);
+        targetY[idx] = 0.0 + t * (-0.45 - 0.0);
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 0;
+        setOrigin(idx);
+        idx++;
+      }
+    }
+
+    // 4. CHIP PERIMETER FRAME (160 points)
+    const countFrameEdge = 20;
+    const chipW = 1.35;
+    const chipH = 0.95;
+    for (let layer = -1; layer <= 1; layer += 2) {
+      const zOffset = layer * 0.22;
+      for (let i = 0; i < countFrameEdge; i++) {
+        const t = (i / (countFrameEdge - 1)) * 2 - 1;
+        targetX[idx] = t * chipW;
+        targetY[idx] = chipH;
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 2;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let i = 0; i < countFrameEdge; i++) {
+        const t = (i / (countFrameEdge - 1)) * 2 - 1;
+        targetX[idx] = t * chipW;
+        targetY[idx] = -chipH;
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 2;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let i = 0; i < countFrameEdge; i++) {
+        const t = (i / (countFrameEdge - 1)) * 2 - 1;
+        targetX[idx] = -chipW;
+        targetY[idx] = t * chipH;
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 2;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let i = 0; i < countFrameEdge; i++) {
+        const t = (i / (countFrameEdge - 1)) * 2 - 1;
+        targetX[idx] = chipW;
+        targetY[idx] = t * chipH;
+        targetZ[idx] = zOffset;
+        pointTypes[idx] = 2;
+        setOrigin(idx);
+        idx++;
+      }
+    }
+
+    // 5. HARDWARE PINS (112 points)
+    const pinCount = 7;
+    for (let p = 0; p < pinCount; p++) {
+      const pinY = ((p / (pinCount - 1)) * 2 - 1) * 0.72;
+      for (let step = 0; step < 4; step++) {
+        const t = step / 3;
+        targetX[idx] = -chipW - t * 0.35;
+        targetY[idx] = pinY;
+        targetZ[idx] = 0;
+        pointTypes[idx] = 3;
+        setOrigin(idx);
+        idx++;
+      }
+      for (let step = 0; step < 4; step++) {
+        const t = step / 3;
+        targetX[idx] = chipW + t * 0.35;
+        targetY[idx] = pinY;
+        targetZ[idx] = 0;
+        pointTypes[idx] = 3;
+        setOrigin(idx);
+        idx++;
+      }
+    }
+
+    // 6. QUANTUM DATA ORBIT (Remaining points)
+    while (idx < TOTAL_POINTS) {
+      const t = (idx / TOTAL_POINTS) * Math.PI * 2;
+      const orbitR = 1.95;
+      targetX[idx] = Math.cos(t) * orbitR;
+      targetY[idx] = Math.sin(t) * orbitR * 0.45;
+      targetZ[idx] = Math.sin(t) * 0.75;
+      pointTypes[idx] = 4;
+      setOrigin(idx, 3.0);
+      idx++;
+    }
 
     // -------------------------------------------------------------
-    // HIGH-PERFORMANCE RENDER LOOP (Identical Desktop Look on Mobile)
+    // RENDER LOOP WITH CONTINUOUS 3D MATH & PERSPECTIVE
     // -------------------------------------------------------------
+    let time = 0;
+    let autoSpin = 0;
+
     const render = () => {
       if (!isVisible) return;
 
-      time += 0.018;
-      autoRotation += 0.0028;
+      time += 0.015;
+      autoSpin += 0.0035;
 
-      // Smooth inertia lerp for fluid rotation
+      // Smooth lerp for scroll-driven assembly
+      currentAssembleProgress += (targetAssembleProgress - currentAssembleProgress) * 0.08;
+      // Scroll smoothly rotates the 3D web symbol
+      scrollRotation += ((scrollY * 0.0016) - scrollRotation) * 0.06;
+
+      // Mouse & touch inertia
       mouse.currentX += (mouse.targetX - mouse.currentX) * 0.045;
       mouse.currentY += (mouse.targetY - mouse.currentY) * 0.045;
 
       ctx.clearRect(0, 0, width, height);
 
-      const isMobile = width < 768;
-      const isTablet = width >= 768 && width < 1280;
+      // Base scaling factor - moderate and refined
+      const scaleFactor = Math.max(0.55, Math.min(width / 1300, 1.05));
+      const isNarrow = width < 1024;
 
-      // 1. Proportional Planet Radius (Generous scale on mobile so dots breathe)
-      const planetRadius = isMobile
-        ? Math.min(width * 0.52, 215)
-        : isTablet
-        ? Math.min(width, height) * 0.38
-        : Math.min(width, height) * 0.44;
+      // Web Symbol Base Scale: Calm, moderate proportions
+      const shortSide = Math.min(width, height);
+      const baseRadius = isNarrow
+        ? Math.min(shortSide * 0.24, 135)
+        : Math.min(shortSide * 0.27, 220);
 
-      // 2. Center Position
-      const centerX = isMobile ? width * 0.5 : isTablet ? width * 0.54 : width * 0.62;
-      const centerY = isMobile ? Math.min(height * 0.38, 310) : height * 0.5;
+      // Center positioning: centered on mobile, right offset on wide desktop
+      const centerX = isNarrow ? width * 0.5 : width * 0.62;
+      const centerY = isNarrow ? Math.min(height * 0.36, 270) : height * 0.5;
 
-      // 3. Density Scaling (Identical dot spacing on mobile as on computer)
-      const activeCount = isMobile ? 480 : isTablet ? 720 : TOTAL_PARTICLES;
+      // Assembly factor: 0.18 when scroll=0 (gentle floating hint), 1.0 when scrolled
+      const assembleRatio = 0.18 + currentAssembleProgress * 0.82;
 
-      // 4. 3D Rotation Angles
-      const rotX = -mouse.currentY * 0.55 + 0.12;
-      const rotY = autoRotation + mouse.currentX * 0.65;
+      // 3D Rotation Angles (Yaw, Pitch, Roll)
+      const rotY = autoSpin + scrollRotation + mouse.currentX * 0.6;
+      const rotX = -mouse.currentY * 0.5 + 0.15 + Math.sin(time * 0.5) * 0.08;
+      const rotZ = Math.sin(time * 0.3) * 0.05;
 
-      const cosX = Math.cos(rotX);
-      const sinX = Math.sin(rotX);
       const cosY = Math.cos(rotY);
       const sinY = Math.sin(rotY);
-
-      // Batched Path2D for 3 Depth Tiers (Pure floating 3D points)
-      const tier1Path = new Path2D(); // Front Highlight
-      const tier2Path = new Path2D(); // Mid Sphere
-      const tier3Path = new Path2D(); // Back Hemisphere
+      const cosX = Math.cos(rotX);
+      const sinX = Math.sin(rotX);
+      const cosZ = Math.cos(rotZ);
+      const sinZ = Math.sin(rotZ);
 
       const fov = 950;
 
-      for (let i = 0; i < activeCount; i++) {
-        const th = thetas[i];
-        const ph = phis[i];
+      // Batch Paths for single-pass GPU fills (maximum performance)
+      const bracketPath = new Path2D(); // Cyan < >
+      const slashPath = new Path2D();   // Emerald /
+      const framePath = new Path2D();   // Deep Sky Blue Chip
+      const pinPath = new Path2D();     // Luminous White Pins
+      const orbitPath = new Path2D();   // Orbiting Data Nodes
 
-        // Motion.dev Signature Fluid Surface Morph Wave
-        const morphWave =
-          0.065 * Math.sin(3 * th + 2 * ph + time * 1.4) +
-          0.035 * Math.cos(4 * th - time * 1.8);
-        const r = planetRadius * (1 + morphWave);
+      const projX = new Float32Array(TOTAL_POINTS);
+      const projY = new Float32Array(TOTAL_POINTS);
 
-        // 3D Coordinates
-        const x0 = baseX[i] * r;
-        const y0 = baseY[i] * r;
-        const z0 = baseZ[i] * r;
+      for (let i = 0; i < TOTAL_POINTS; i++) {
+        const tx = targetX[i];
+        const ty = targetY[i];
+        const tz = targetZ[i];
 
-        // Rotate Y (Yaw & Auto-Spin)
-        const x1 = x0 * cosY + z0 * sinY;
-        const z1 = -x0 * sinY + z0 * cosY;
+        const ox = origX[i];
+        const oy = origY[i];
+        const oz = origZ[i];
 
-        // Rotate X (Pitch from Mouse/Touch)
-        const y2 = y0 * cosX - z1 * sinX;
-        const z2 = y0 * sinX + z1 * cosX;
+        const floatWave = Math.sin(time * 1.5 + i * 0.1) * 0.03 * (1 - currentAssembleProgress);
+
+        const x = (ox + (tx - ox) * assembleRatio) * baseRadius;
+        const y = (oy + (ty - oy) * assembleRatio + floatWave) * baseRadius;
+        const z = (oz + (tz - oz) * assembleRatio) * baseRadius;
+
+        // 3D Matrix Rotation (Yaw Y)
+        const x1 = x * cosY + z * sinY;
+        const z1 = -x * sinY + z * cosY;
+
+        // 3D Matrix Rotation (Pitch X)
+        const y2 = y * cosX - z1 * sinX;
+        const z2 = y * sinX + z1 * cosX;
+
+        // 3D Matrix Rotation (Roll Z)
+        const x3 = x1 * cosZ - y2 * sinZ;
+        const y3 = x1 * sinZ + y2 * cosZ;
 
         // Perspective Projection
         const depth = fov / (fov + z2);
-        const px = centerX + x1 * depth;
-        const py = centerY + y2 * depth;
+        const px = centerX + x3 * depth;
+        const py = centerY + y3 * depth;
 
-        // Responsive Dot Radii: Delicate and crisp on mobile, bold on desktop
-        if (z2 > planetRadius * 0.28) {
-          // Front Highlight Tier
-          const pr = (isMobile ? 1.6 : 2.6) * depth;
-          tier1Path.moveTo(px + pr, py);
-          tier1Path.arc(px, py, pr, 0, Math.PI * 2);
-        } else if (z2 > -planetRadius * 0.25) {
-          // Mid Sphere Tier
-          const pr = (isMobile ? 1.1 : 1.9) * depth;
-          tier2Path.moveTo(px + pr, py);
-          tier2Path.arc(px, py, pr, 0, Math.PI * 2);
+        projX[i] = px;
+        projY[i] = py;
+
+        const type = pointTypes[i];
+        let r = 1.0;
+
+        if (type === 0) {
+          // Web Brackets `< >` (Electric Cyan)
+          r = 1.05 * scaleFactor * depth;
+          bracketPath.moveTo(px + r, py);
+          bracketPath.arc(px, py, r, 0, Math.PI * 2);
+        } else if (type === 1) {
+          // Center Slash `/` (Emerald Green)
+          r = 1.15 * scaleFactor * depth;
+          slashPath.moveTo(px + r, py);
+          slashPath.arc(px, py, r, 0, Math.PI * 2);
+        } else if (type === 2) {
+          // Perimeter Frame
+          r = 0.85 * scaleFactor * depth;
+          framePath.moveTo(px + r, py);
+          framePath.arc(px, py, r, 0, Math.PI * 2);
+        } else if (type === 3) {
+          // Hardware Pins
+          r = 0.75 * scaleFactor * depth;
+          pinPath.moveTo(px + r, py);
+          pinPath.arc(px, py, r, 0, Math.PI * 2);
         } else {
-          // Back Hemisphere Tier
-          const pr = (isMobile ? 0.7 : 1.2) * depth;
-          tier3Path.moveTo(px + pr, py);
-          tier3Path.arc(px, py, pr, 0, Math.PI * 2);
+          // Data orbit
+          r = 0.65 * scaleFactor * depth;
+          orbitPath.moveTo(px + r, py);
+          orbitPath.arc(px, py, r, 0, Math.PI * 2);
         }
       }
 
-      // Execute exactly 3 GPU-batched draws:
-      // Pass 1: Back tier (deep celestial cyan-slate)
+      // -------------------------------------------------------------
+      // DRAW CONNECTING LINES WHEN ASSEMBLED ON SCROLL
+      // -------------------------------------------------------------
+      if (currentAssembleProgress > 0.35) {
+        const lineAlpha = (currentAssembleProgress - 0.35) / 0.65;
+
+        // Left bracket `<` line
+        ctx.beginPath();
+        ctx.moveTo(projX[0], projY[0]);
+        for (let i = 1; i < 30; i++) ctx.lineTo(projX[i], projY[i]);
+        ctx.strokeStyle = `rgba(56, 189, 248, ${0.45 * lineAlpha})`;
+        ctx.lineWidth = 1.1 * scaleFactor;
+        ctx.stroke();
+
+        // Center slash `/` line
+        ctx.beginPath();
+        ctx.moveTo(projX[60], projY[60]);
+        for (let i = 61; i < 60 + 22; i++) ctx.lineTo(projX[i], projY[i]);
+        ctx.strokeStyle = `rgba(52, 211, 153, ${0.60 * lineAlpha})`;
+        ctx.lineWidth = 1.3 * scaleFactor;
+        ctx.stroke();
+
+        // Right bracket `>` line
+        ctx.beginPath();
+        ctx.moveTo(projX[104], projY[104]);
+        for (let i = 105; i < 104 + 30; i++) ctx.lineTo(projX[i], projY[i]);
+        ctx.strokeStyle = `rgba(56, 189, 248, ${0.45 * lineAlpha})`;
+        ctx.lineWidth = 1.1 * scaleFactor;
+        ctx.stroke();
+
+        // Outer chip boundary frame
+        ctx.beginPath();
+        const frameStart = 164;
+        ctx.moveTo(projX[frameStart], projY[frameStart]);
+        for (let i = frameStart + 1; i < frameStart + 80; i++) {
+          ctx.lineTo(projX[i], projY[i]);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = `rgba(56, 189, 248, ${0.25 * lineAlpha})`;
+        ctx.lineWidth = 0.8 * scaleFactor;
+        ctx.stroke();
+      }
+
+      // -------------------------------------------------------------
+      // DRAW BATCHED 3D NODES
+      // -------------------------------------------------------------
       ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
-      ctx.fill(tier3Path);
+      ctx.fill(orbitPath);
 
-      // Pass 2: Mid tier (electric cyan)
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.85)';
-      ctx.fill(tier2Path);
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.65)';
+      ctx.fill(framePath);
 
-      // Pass 3: Front highlight tier (luminous white-cyan)
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
-      ctx.fill(tier1Path);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.80)';
+      ctx.fill(pinPath);
+
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.95)';
+      ctx.fill(bracketPath);
+
+      ctx.fillStyle = 'rgba(52, 211, 153, 0.98)';
+      ctx.fill(slashPath);
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -219,10 +469,12 @@ export const InteractivePlanet: React.FC = () => {
     animationFrameId = requestAnimationFrame(render);
 
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       cancelAnimationFrame(animationFrameId);
     };
@@ -232,6 +484,7 @@ export const InteractivePlanet: React.FC = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+      style={{ width: '100%', height: '100%' }}
       aria-hidden="true"
     />
   );

@@ -12,7 +12,7 @@ export const RunwayReel: React.FC = () => {
       style={{ contain: 'paint' }}
     >
       {/* Runway Header Bar */}
-      <div className="max-w-[1920px] 3xl:max-w-[2200px] mx-auto px-6 sm:px-10 mb-4 flex items-center justify-between">
+      <div className="max-w-[1920px] 3xl:max-w-[2200px] mx-auto px-4 sm:px-8 md:px-12 mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
@@ -39,7 +39,7 @@ export const RunwayReel: React.FC = () => {
         {reelItems.map((project, index) => (
           <div
             key={`${project.id}-${index}`}
-            className="relative w-72 sm:w-96 aspect-[16/10] rounded-2xl overflow-hidden bg-[#0c0f18] border border-white/15 shadow-xl shrink-0 group/card cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:border-sky-400/60"
+            className="relative w-64 sm:w-80 md:w-96 aspect-[16/10] rounded-2xl overflow-hidden bg-[#0c0f18] border border-white/15 shadow-xl shrink-0 group/card cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:border-sky-400/60"
           >
             {/* Cyber Corner HUD */}
             <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t-2 border-l-2 border-sky-400 z-20" />

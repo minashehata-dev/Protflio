@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Compass, Mail, FileText, Github, Linkedin, X, ArrowRight } from 'lucide-react';
+import { Search, Compass, Mail, FileText, MessageSquare, X, ArrowRight } from 'lucide-react';
 import { personalInfo } from '../../data/portfolioData';
 
 interface CommandMenuProps {
@@ -61,14 +61,8 @@ export const CommandMenu: React.FC<CommandMenuProps> = ({ isOpen, onClose }) => 
       group: "Actions",
       items: [
         { label: "Copy Direct Email", icon: Mail, action: copyEmail },
+        { label: "Chat on WhatsApp", icon: MessageSquare, action: () => window.open(personalInfo.whatsapp, '_blank') },
         { label: "Download Executive Resume", icon: FileText, action: () => window.open(personalInfo.resumeUrl, '_blank') },
-      ],
-    },
-    {
-      group: "Profiles",
-      items: [
-        { label: "LinkedIn Profile", icon: Linkedin, action: () => window.open(personalInfo.linkedin, '_blank') },
-        { label: "GitHub Repositories", icon: Github, action: () => window.open(personalInfo.github, '_blank') },
       ],
     },
   ];

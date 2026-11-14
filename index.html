@@ -2,7 +2,10 @@
 <html lang="en" class="dark scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+
+    <!-- Web App Manifest (prevents Chrome mobile from opening a new tab) -->
+    <link rel="manifest" href="/manifest.json" />
 
     <!-- Primary SEO Meta Tags -->
     <title>Mina Shehata Bernaba | Android, Web &amp; Embedded Systems Developer</title>
@@ -125,9 +128,7 @@
             "addressCountry": "EG"
           },
           "sameAs": [
-            "https://wa.me/201270144885",
-            "https://github.com/mina-shehata",
-            "https://linkedin.com/in/mina-shehata"
+            "https://wa.me/201270144885"
           ],
           "knowsAbout": [
             "Android Development",
@@ -176,7 +177,7 @@
     }
     </script>
   </head>
-  <body class="bg-[#08090d] text-slate-100 selection:bg-slate-700 selection:text-white antialiased">
+  <body class="bg-[#08090d] text-slate-100 selection:bg-slate-700 selection:text-white antialiased overflow-x-hidden w-full">
     <!-- Immediate Semantic Fallback for Search Engine Crawlers & Googlebot -->
     <noscript>
       <div itemscope itemtype="https://schema.org/Person" style="padding: 20px; color: #fff;">

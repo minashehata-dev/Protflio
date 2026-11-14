@@ -94,7 +94,7 @@ export const Navbar: React.FC = () => {
           >
             <span
               translate="no"
-              className="notranslate font-black text-2xl sm:text-3xl xl:text-3xl 2xl:text-4xl tracking-tight text-white group-hover:text-sky-300 transition-colors"
+              className="notranslate font-black text-xl sm:text-2xl tracking-tight text-white group-hover:text-sky-300 transition-colors"
             >
               MS<span className="text-sky-400">.</span>
             </span>
@@ -102,7 +102,7 @@ export const Navbar: React.FC = () => {
             <div className="hidden md:flex items-center text-left pl-3 border-l-2 border-white/15">
               <span
                 translate="no"
-                className="notranslate font-bold text-xs md:text-sm lg:text-base text-white leading-tight"
+                className="notranslate font-bold text-xs md:text-sm text-white leading-tight"
               >
                 {personalInfo.name}
               </span>
@@ -111,14 +111,14 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Center Column: Nav Links (Visible on Laptop & Desktop >= lg 1024px) */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 mx-4 lg:mx-6 xl:mx-10 min-w-0">
-          <div className="flex items-center gap-4 lg:gap-6 xl:gap-8">
+        <nav className="hidden lg:flex items-center justify-center flex-1 mx-4 lg:mx-6 min-w-0">
+          <div className="flex items-center gap-4 lg:gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => scrollToSection(e, link.href)}
-                className="text-sm lg:text-base 2xl:text-lg font-medium text-white hover:text-sky-300 transition-colors relative py-1 group whitespace-nowrap tracking-wide cursor-pointer"
+                className="text-xs sm:text-sm font-medium text-white hover:text-sky-300 transition-colors relative py-1 group whitespace-nowrap tracking-wide cursor-pointer"
               >
                 <span>{link.label}</span>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-200 group-hover:w-full" />
@@ -133,10 +133,10 @@ export const Navbar: React.FC = () => {
           <a
             href="#contact"
             onClick={(e) => scrollToSection(e, '#contact')}
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4.5 xl:px-5 2xl:px-6 py-1.5 sm:py-2 xl:py-2.5 2xl:py-3 rounded-full text-xs sm:text-sm xl:text-sm 2xl:text-base font-bold text-slate-950 bg-white hover:bg-slate-200 transition-all shadow-md hover:shadow-sky-500/10 hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-white hover:bg-slate-200 transition-all shadow-md hover:shadow-sky-500/10 hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
           >
             <span>Consultation</span>
-            <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-950" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-950" />
           </a>
 
           {/* Mobile & Tablet Hamburger Toggle (Active on < lg screens) */}

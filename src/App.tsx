@@ -1,6 +1,7 @@
 import React from 'react';
 import { AmbientBackground } from './components/canvas/AmbientBackground';
 import { Navbar } from './components/common/Navbar';
+import { CustomCursor } from './components/common/CustomCursor';
 import { Hero } from './components/sections/Hero';
 import { Disciplines } from './components/sections/Disciplines';
 import { TechMarquee } from './components/sections/TechMarquee';
@@ -12,7 +13,10 @@ import { Footer } from './components/common/Footer';
 
 export const App: React.FC = () => {
   return (
-    <div className="relative min-h-screen bg-[#0a0b0e] text-slate-100 selection:bg-slate-700 selection:text-white">
+    <div className="relative min-h-screen w-full bg-[#0a0b0e] text-slate-100 selection:bg-slate-700 selection:text-white overflow-x-hidden">
+      {/* Precision Magnetic Cursor (Desktop Only) */}
+      <CustomCursor />
+
       {/* Zero-Lag Ambient Background */}
       <AmbientBackground />
 
@@ -20,7 +24,7 @@ export const App: React.FC = () => {
       <Navbar />
 
       {/* Main Content Sections with Top Padding for Fixed Large Navbar */}
-      <main className="relative z-10 pt-24 sm:pt-28 md:pt-32 lg:pt-36 xl:pt-40">
+      <main className="relative z-10 w-full pt-16 sm:pt-20 lg:pt-24">
         <Hero />
         <Disciplines />
         <TechMarquee />

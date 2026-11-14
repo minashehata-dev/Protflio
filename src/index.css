@@ -7,19 +7,56 @@
     color-scheme: dark;
   }
 
-  /* Base HTML Settings */
+  /* Normalize rendering across all environments (VS Code, Chrome, Safari) */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 5rem;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: #0a0b0e;
     color: #f1f5f9;
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Magnetic Cursor Hide Native Arrow on Desktop Only */
+  @media (pointer: fine) {
+    body.has-custom-cursor,
+    body.has-custom-cursor a,
+    body.has-custom-cursor button,
+    body.has-custom-cursor [role="button"],
+    body.has-custom-cursor .cursor-pointer {
+      cursor: none !important;
+    }
+
+    body.has-custom-cursor input,
+    body.has-custom-cursor textarea,
+    body.has-custom-cursor select {
+      cursor: text !important;
+    }
   }
 
   /* Clean dark scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: #0a0b0e;
@@ -59,7 +96,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  /* Organic Morphing Blob Frame (CodingNepal Signature Frame) */
+  /* Organic Morphing Blob Frame */
   .hero-blob-image {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
     animation: blobMorph 10s ease-in-out infinite;
@@ -75,7 +112,7 @@
   /* Runway Image Loading & Laser Scanline Animations */
   .runway-scan-grid {
     background-size: 24px 24px;
-    background-image: 
+    background-image:
       linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
@@ -90,6 +127,35 @@
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
+  }
+
+  /* Proportional, refined blob sizing */
+  .blob-container {
+    width: 220px;
+    height: 220px;
+    max-width: 75vw;
+    max-height: 75vw;
+  }
+
+  @media (min-width: 640px) {
+    .blob-container {
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blob-container {
+      width: 360px;
+      height: 360px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .blob-container {
+      width: 420px;
+      height: 420px;
+    }
   }
 }
 

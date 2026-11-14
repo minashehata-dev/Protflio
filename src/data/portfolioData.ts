@@ -13,8 +13,6 @@ export const personalInfo = {
   email: "menashehata1230@gmail.com",
   phone: "+20 127 014 4885",
   whatsapp: "https://wa.me/201270144885",
-  github: "https://github.com/mina-shehata",
-  linkedin: "https://linkedin.com/in/mina-shehata",
   resumeUrl: "#",
 };
 
@@ -57,7 +55,6 @@ export const featuredProjects: Project[] = [
     tags: ["Flutter", "Dart", "Firebase", "InstaPay", "Vodafone Cash", "Gamification", "REST APIs"],
     category: "Mobile",
     featured: true,
-    githubUrl: "https://github.com",
     liveUrl: "https://example.com",
     image: "/assets/projects/codex-academy-home.jpg",
     screenshots: [
@@ -76,7 +73,6 @@ export const featuredProjects: Project[] = [
     tags: ["Embedded C++", "Microcontroller", "HC-SR04 Ultrasonic", "L298N Motor Driver", "PWM Control", "Robotics"],
     category: "Embedded",
     featured: true,
-    githubUrl: "https://github.com",
     liveUrl: "https://example.com",
     image: "/assets/projects/embedded-robot-car.jpg",
     metrics: "Real-Time Ultrasonic Navigation",
@@ -89,7 +85,6 @@ export const featuredProjects: Project[] = [
     tags: ["React", "TypeScript", "Tailwind CSS", "Inventory Management", "Order Tracking", "REST APIs"],
     category: "Web",
     featured: true,
-    githubUrl: "https://github.com",
     liveUrl: "https://example.com",
     image: "/assets/projects/old-glory-suppliers.png",
     screenshots: [
